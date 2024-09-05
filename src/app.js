@@ -19,4 +19,4 @@ app.use(express.static("public")) // for storing the pdf and file store in our o
 app.use(cookieParser())     //  user ke browser ki cokkie read and set the cookie of the user browser
 
 
-export { app }
+export default app 
