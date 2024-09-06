@@ -19,4 +19,16 @@ app.use(express.static("public")) // for storing the pdf and file store in our o
 app.use(cookieParser())     //  user ke browser ki cokkie read and set the cookie of the user browser
 
 
+//******routes import
+
+import userRouter from './routes/user.routs.js'
+
+// routs declaration
+app.use("/api/v1/users",userRouter)
+// http://localhost:8000/api/v1/users/register
+
+
+
+
+
 export default app 
