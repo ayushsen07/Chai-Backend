@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import  jwt, { sign }  from "jsonwebtoken";
+import  jwt  from "jsonwebtoken";
 import  bcrypt from 'bcrypt'
 
 
@@ -51,7 +51,7 @@ const userSchema = new mongoose.Schema({
 
 userSchema.pre("save" , async function(next){
     if(!this.isModified("password")) return next()
-    this.password = bcrypt.hash(this.password, 8)
+    this.password = await bcrypt.hash(this.password, 8)
     next()
 }) // this is a kind of middle ware it check just before sacing the data and the condition wtite bcz so not want to change password every time change only first time change means hashed the  password 
 
