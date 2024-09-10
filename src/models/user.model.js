@@ -56,33 +56,33 @@ userSchema.pre("save" , async function(next){
 }) // this is a kind of middle ware it check just before sacing the data and the condition wtite bcz so not want to change password every time change only first time change means hashed the  password 
 
 userSchema.methods.isPasswordCorrect = async function(password){
- await   bcrypt.compare(password, this.password)
+   return await   bcrypt.compare(password, this.password)
 }
 
 
 userSchema.methods.generateAccessToken=function(){
     return jwt.sign(
         {
-            _id : this,_id,
+            _id : this._id,
             email : this.email,
             username : this.username,
             fullName : this.fullName
         },
         process.env.ACCESS_TOKEN_SECRET,
         {
-            expiresIn : process.env. ACCESS_TOKEN_EXPIRY
+            expiresIn : process.env.ACCESS_TOKEN_EXPIRY
         }
     )
 }
 userSchema.methods.generateRefreshToken=function(){
     return jwt.sign(
         {
-            _id : this,_id,
+            _id : this._id,
             
         },
         process.env.REFRESH_TOKEN_SECRET,
         {
-            expiresIn : process.env. REFRESH_TOKEN_EXPIRY
+            expiresIn : process.env.REFRESH_TOKEN_EXPIRY
         }
     )
 }
