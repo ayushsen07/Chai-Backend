@@ -59,12 +59,12 @@ if (existedUser) {
 // console.log(req.files);
 
 const avatarLocalPath = req.files?.avatar[0]?.path;
-//const coverImageLocalPath= req.files?.coverImage[0]?.path  || "";
+const coverImageLocalPath= req.files?.coverImage[0]?.path  || "";
   
-let coverImageLocalPath;
-if (req.files && Array.isArray(req.files.coverImage) && req.files.coverImage.length > 0 ) {
-  coverImageLocalPath = req.files.coverImage[0].path
-}
+// let coverImageLocalPath;
+// if (req.files && Array.isArray(req.files.coverImage) && req.files.coverImage.length > 0 ) {
+//   coverImageLocalPath = req.files.coverImage[0].path
+// }
 //console.log(avatarLocalPath);
   
 
@@ -124,6 +124,10 @@ const loginUser = asyncHandler(async(req , res)=>{
 
     const {email, username , password} = req.body
 
+      // console.log("email" , req.body.email);
+       
+
+
     if (!username && !email) {
         throw new ApiError(400, "username or email is required")   
     }
@@ -134,6 +138,8 @@ const loginUser = asyncHandler(async(req , res)=>{
     if(!user){
         throw new ApiError(404,"user does not exist")
     }
+   // console.log("user details",user);
+    
 
 
     const isPasswordValid = await user.isPasswordCorrect(password)
