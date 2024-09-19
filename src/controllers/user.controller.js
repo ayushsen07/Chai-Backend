@@ -4,6 +4,7 @@ import { User } from "../models/user.model.js";
 import {uploadOnCloudinary} from "../utils/cloudnary.js"
 import ApiResponse from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken"
+import mongoose from "mongoose";
 const generateAccessAndRefreshToken = async(userId)=>{
     // this function is for generate access or rrefresh token when we call it
     try {
@@ -179,8 +180,8 @@ const loginUser = asyncHandler(async(req , res)=>{
 const logoutUser = asyncHandler(async(req, res)=>{
    await User.findByIdAndUpdate(req.user._id,
        {
-          $set :{
-            refreshToken : undefined
+          $unset :{
+            refreshToken : 1
           }
         },
         {
@@ -355,10 +356,10 @@ const getUserChannelProfile = asyncHandler(async(req ,res )=>{
     const channel = await User.aggregate([
         {
             $match:{
-                username :username?.toLowercase()
+                username :username?.toLowerCase()
             }
         },
-        {
+        {    // this for user to see ki usne kis kis ko subscribe kr rakh hai
             $lookup:{
                 from : "subscriptions",
                 localField: "_id",
@@ -367,7 +368,7 @@ const getUserChannelProfile = asyncHandler(async(req ,res )=>{
             }
 
         },
-        {
+        {  // this for channel owner ki uske channel ke subscriber kitne hai
             $lookup:{
                 from : "subscriptions",
                 localField: "_id",
@@ -383,13 +384,13 @@ const getUserChannelProfile = asyncHandler(async(req ,res )=>{
                 channelsSubscribedToCount:{
                 $size: "$subscribedTo"
                 },
-                isSubscribed :{
-                     $cond :{
-                        if:{$in:[req.user?._id , "$subscribers.subscriber"]},
-                        than : true,
-                        else : false
-                     }
-                }
+                // isSubscribed :{
+                //      $cond :{
+                //         if:{$in:[req.user?._id , "$subscribers.subscriber"]},
+                //         than : true,
+                //         else : false
+                //      }
+                // }
             }
         },
         {
@@ -421,7 +422,7 @@ const getWatchHistory = asyncHandler(async(req,res)=>{
     const user = await User.aggregate([
         {
             $match :{
-                _id : new mongoose.Tyoes.ObjectId(req.user._id)
+                _id : new mongoose.Types.ObjectId(req.user._id)
             }
         },
           
@@ -455,7 +456,7 @@ const getWatchHistory = asyncHandler(async(req,res)=>{
 
     return res.status(200)
     .json(
-        new ApiResponse(200,user[0].watcHistory , "watch History fetched successfully")
+        new ApiResponse(200,user[0].watchHistory , "watch History fetched successfully")
     )
 })
 
