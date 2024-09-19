@@ -26,10 +26,12 @@ app.use(cookieParser())     //  user ke browser ki cokkie read and set the cooki
 //******routes import
 
 import userRouter from './routes/user.routs.js'
+import videoRouter from "./routes/video.routes.js"
 
 // routs declaration
 app.use("/api/v1/users",userRouter)
 // http://localhost:8000/api/v1/users/register
+app.use('/api/v1/videos' , videoRouter)
 
 
 
