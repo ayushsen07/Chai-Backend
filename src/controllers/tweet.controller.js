@@ -7,7 +7,8 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { Like } from "../models/likes.model.js";
 
 
-// create a tweet
+// create a tweet  
+
 const createTweet = asyncHandler(async(req,res)=>{
     const {content} = req.body
     if (!content) {
