@@ -119,38 +119,40 @@ const getUserTweets = asyncHandler(async(req,res)=>{
 const updateTweet = asyncHandler(async(req, res)=>{
     const {content} = req.body
     const {tweetId} = req.params
+
+    if(!isValidObjectId(isValidObjectId(tweetId))){
+        throw new ApiError(400, "Invalid tweetId")
+    }
+    if (!content) {
+        throw new ApiError(404, "content is required")
+    }
+    
+    const tweet = await Tweet.findById(tweetId)
+    if (!tweet) {
+        throw new ApiError(400, "tweet not found")
+    }
+    
+    if(tweet?.owner.toString() !== req.user?._id.toString()){
+        throw new ApiError(404,"only owner can update the tweet")
+    }
+    
+    const newTweet = await Tweet.findByIdAndUpdate(tweetId,{
+           $set:{
+            content
+           }
+       }, 
+       {new :true}
+    );
+    if (!newTweet) {
+        throw new ApiError(404,"Tweet update is failed!! try again")
+    }
+    
+    return res
+    .status(200)
+    .json(new ApiResponse(200, newTweet , "tweet update successfully"))
+    
+    
 })
-
-if(!isValidObjectId(isValidObjectId(tweetId))){
-    throw new ApiError(400, "Invalid tweetId")
-}
-if (!content) {
-    throw new ApiError(404, "content is required")
-}
-
-const tweet = await Tweet.findById(tweetId)
-if (!tweet) {
-    throw new ApiError(400, "tweet not found")
-}
-
-if(tweet?.owner.toString() !== req.user?._id.toString()){
-    throw new ApiError(404,"only owner can update the tweet")
-}
-
-const newTweet = await Tweet.findByIdAndUpdate(tweetId,{
-       $set:{
-        content
-       }
-   }, 
-   {new :true}
-);
-if (!newTweet) {
-    throw new ApiError(404,"Tweet update is failed!! try again")
-}
-
-return res
-.status(200)
-.json(new ApiResponse(200, newTweet , "tweet update successfully"))
 
 
 //delete tweets
@@ -197,6 +199,7 @@ const deleteTweet = asyncHandler(async(req,res)=>{
 export {
     createTweet,
     getUserTweets,
-    deleteTweet
+    deleteTweet,
+    updateTweet
     
 }
